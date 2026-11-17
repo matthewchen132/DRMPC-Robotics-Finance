@@ -83,3 +83,22 @@ def test_input_bound_is_respected():
     L_hat = fit_predictor(Z, Y, n, m)
     plan = make_controller(L_hat, Z, Y, n, m, 0.0, 0.0, u_max=0.05, **SPEC)(np.array([0.9, 0.9]))
     assert np.all(np.abs(plan) <= 0.05 + 1e-7)
+
+
+def test_cartpole_matches_gymnasium_jacobian():
+    """Central differences of the nonlinear env's step at upright give back (A, B)."""
+    from gymnasium.envs.classic_control.cartpole import CartPoleEnv
+    from core.cartpole import cartpole
+
+    A_cp, B_cp = cartpole()
+    env, h = CartPoleEnv(), 1e-6
+
+    def step(x, force):
+        env.state, env.force_mag = np.array(x, float), abs(force)
+        env.steps_beyond_terminated = None
+        env.step(int(force > 0))
+        return env.state
+
+    J = np.column_stack([(step(h * e, 0.0) - step(-h * e, 0.0)) / (2 * h) for e in np.eye(4)])
+    Bj = (step(np.zeros(4), h) - step(np.zeros(4), -h)) / (2 * h)
+    assert np.allclose(J, A_cp, atol=1e-6) and np.allclose(Bj, B_cp.ravel(), atol=1e-6)
