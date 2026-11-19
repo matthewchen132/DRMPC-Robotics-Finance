@@ -1,7 +1,7 @@
 import numpy as np
 
-def collect_offline_trajectories(A, B, num_trajectories, T,
-                                 noise_std=0.03, action_std=0.5, x0_std=0.5, rng=None):    
+def collect_offline_trajectories(A, B, num_trajectories, T, *, rng,
+                                 noise_std=0.03, action_std=0.5, x0_std=0.5):
     """
     Collect offline trajectories from a linear dynamical system defined by matrices A and B with additive Gaussian noise.
 
@@ -13,15 +13,12 @@ def collect_offline_trajectories(A, B, num_trajectories, T,
     noise_std (float): Standard deviation of the Gaussian noise added to the state transitions.
     action_std (float): Standard deviation of the Gaussian noise added to the actions.
     x0_std (float): Standard deviation of the Gaussian noise added to the initial states.
-    rng (np.random.Generator): Random number generator.
+    rng (np.random.Generator): Required, so every dataset is reproducible (see core.generate_rng.trial_rngs).
 
     Returns:
     tuple: A tuple representing (Z, Y) representing the collected trajectories, where Z contains the initial states and actions, 
             and Y contains the resulting states after applying the dynamics.
     """
-    if rng is None:
-        rng = np.random.default_rng()
-
     n,m = B.shape
 
     Z = np.zeros((num_trajectories, n + m * T))

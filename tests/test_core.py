@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from core.mpc import closed_loop_metrics, make_controller, simulate
+from core.drmpc import closed_loop_metrics, make_controller, simulate
 from core.offline import collect_offline_trajectories
 from core.radius import estimate_radius, fit_predictor
 
