@@ -23,11 +23,15 @@ import numpy as np
 
 def data_matrices(Z, Y, n):
     """Split DRMPC data Z = [x_0, u], Y = [x_1..x_T] (one row per trajectory) into X0, Uf, Yf."""
-    return Z[:, :n].T, Z[:, n:].T, Y.T
+    return Z[:, :n].T, Z[:, n:].T, Y.T # This is the Hankel Matrix Stack of [U_p; Y_p; U_f; Y_f]
 
 
-def fundamental_lemma_rank(Z):
-    """Rank of [X0; Uf]. The lemma needs n + m*T (every (x_0, u) direction covered)."""
+def fundamental_lemma_rank(Z): 
+    """
+    Rank of [X0; Uf]. The lemma needs n + m*T (every (x_0, u) direction covered).
+    
+    Must be satisfied for the matrix equality constraint. For a valid g to exist,
+    """
     return np.linalg.matrix_rank(Z.T), Z.shape[1]
 
 
@@ -38,7 +42,7 @@ def make_controller(Z, Y, n, lambda_g, state_weight, ref, x_min, x_max,
     lambda_g weights ||g||_1 (paper eq. 8). With noisy data, g can steer the prediction along
     noise directions that are not real dynamics; the penalty limits how far it can.
     """
-    X0, Uf, Yf = data_matrices(Z, Y, n)
+    X0, Uf, Yf = data_matrices(Z, Y, n)     # Creates [U_p; Y_p; U_f; Y_f]. 
     T = Yf.shape[0] // n
 
     x0 = cp.Parameter(n)
