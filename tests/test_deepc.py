@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from core.deempc import data_matrices, fundamental_lemma_rank, make_controller
+from core.deepc import data_matrices, fundamental_lemma_rank, make_controller
 from core.drmpc import simulate
 from core.generate_rng import trial_rngs
 from core.offline import collect_offline_trajectories
