@@ -1,5 +1,4 @@
-# Applications-of-MPC-on-Robotic-Control-and-Financial-Optimization
-Applications of MPC on Robotic Control and Financial Optimization. 
+# ECE 285 Project: How to control under unknown system dynamics?
 
 # To Run the Notebook
 1. Clone the repository.
